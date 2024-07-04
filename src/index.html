@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>Title of the document</title>
+</head>
+<body>
+<h1>This is kiko</h1>
+<label>
+    <input type="text">
+</label>
+<button type="button">Send the message</button>
+<script>
+const conn = new WebSocket('ws://localhost:8080');
+
+conn.onopen = function() {
+    console.log("Connection established!");
+};
+
+ conn.onmessage = function(e) {
+    console.log(e.data);
+};
+
+let message = "";
+
+ addEventListener("input", function (e){
+     message = e.target.value;
+ })
+
+addEventListener("click", function (e) {
+    conn.send(message)
+})
+</script>
+</body>
+</html>
+
