@@ -2,20 +2,22 @@
 
 namespace MyApp;
 
+use Exception;
 use Ratchet\MessageComponentInterface;
 use Ratchet\ConnectionInterface;
+use SplObjectStorage;
 
 class Chat implements MessageComponentInterface {
     protected $clients;
 
     public function __construct() {
-        $this->clients = new \SplObjectStorage;
+        $this->clients = new SplObjectStorage;
     }
     public function onOpen(ConnectionInterface $conn) {
         // Store the new connection to send messages to later
         $this->clients->attach($conn);
 
-        echo "New connection! ({$conn->resourceId})n";
+        echo "New connection! ($conn->resourceId)n";
     }
     public function onMessage(ConnectionInterface $from, $msg) {
         $numRecv = count($this->clients) - 1;
@@ -32,7 +34,7 @@ class Chat implements MessageComponentInterface {
         // The connection is closed, remove it, as we can no longer send it messages
         $this->clients->detach($conn);
     }
-    public function onError(ConnectionInterface $conn, \Exception $e) {
+    public function onError(ConnectionInterface $conn, Exception $e) {
         echo "An error has occurred: {$e->getMessage()}\n";
 
         $conn->close();
