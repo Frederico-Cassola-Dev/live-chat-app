@@ -1,6 +1,7 @@
 DROP TABLE IF EXISTS users;
 
-CREATE TABLE IF NOT EXISTS users (
+CREATE TABLE IF NOT EXISTS users
+(
     id         INT AUTO_INCREMENT PRIMARY KEY,
     username   VARCHAR(100) NOT NULL,
     first_name VARCHAR(100) NOT NULL,
@@ -21,3 +22,10 @@ VALUES ('john_doe', 'John', 'Doe', 34, 'France', 'john_doe@mail.com'),
        ('laura_gonzalez', 'Laura', 'Gonzalez', 31, 'Mexico', 'john_doe@mail.com'),
        ('david_kim', 'David', 'Kim', 36, 'South Korea', 'john_doe@mail.com'),
        ('sophia_lambert', 'Sophia', 'Lambert', 27, 'Italy', 'john_doe@mail.com');
+
+CREATE TABLE IF NOT EXISTS ws
+(
+    id       INT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(100) NOT NULL,
+    session  INT          NOT NULL
+);

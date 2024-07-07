@@ -2,6 +2,7 @@
 
 require __DIR__ . '/../vendor/autoload.php';
 
+// TODO - Use dotenv allover in the project
 $dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/../');
 $dotenv->load();
 
