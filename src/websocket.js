@@ -6,46 +6,42 @@ const sendMessageButton = document.querySelector("#sendMessageButton");
 const loginButton = document.querySelector("#loginButton");
 
 let username = "";
+let message = {};
 
-conn.onopen = function (e) {
-    console.log("This is the event from onopen", e);
-    connectionStatus.innerText = "Connection established!";
-    /*
-    TODO - Try to send the username into the websocket server
-           and after to the db to register
-           the user in the websocket server
-   */
-};
-
-conn.onmessage = function (e) {
-    console.log("Event from onmessage", e);
-
-    const list = document.getElementById("messages-list");
-    const item = document.createElement("li");
-
-    item.innerText = JSON.parse(e.data).msg + "\n" + new Date(JSON.parse(e.data).date).toLocaleTimeString();
-    list.appendChild(item);
-};
+/*
+TODO - Try to send the username into the websocket server
+       and after to the db to register
+       the user in the websocket server
+*/
 
 inputLogin.addEventListener("input", function (e) {
     username = e.target.value;
-    console.log(username);
 })
 
 inputLogin.addEventListener("keypress", function (e) {
     if (e.key === "Enter") {
         e.preventDefault();
-        sendMessageButton.click();
+        loginButton.click();
     }
 })
+
 loginButton.addEventListener("click", function () {
-    conn.send(JSON.stringify({
-        user: username, session: "test"
-    }));
+
+    // Verify if the connection is established and if the input isn't empty
+    if (conn.readyState === 1 && username !== "") {
+
+        connectionStatus.innerText = `Connection established with the user ${username}!`;
+
+        conn.send(JSON.stringify({
+            user: username, session: "test"
+        }));
+    } else {
+        connectionStatus.innerText = `Connection failed`;
+    }
+
     inputLogin.value = "";
 })
-
-let message = {};
+console.log("Connection", conn)
 
 inputMessage.addEventListener("input", function (e) {
     message = {
@@ -62,5 +58,15 @@ inputMessage.addEventListener("keypress", function (e) {
 
 sendMessageButton.addEventListener("click", function () {
     conn.send(JSON.stringify(message));
+
+    conn.onmessage = function (e) {
+
+        const list = document.getElementById("messages-list");
+        const item = document.createElement("li");
+
+        item.innerText = JSON.parse(e.data).msg + "\n" + new Date(JSON.parse(e.data).date).toLocaleTimeString();
+
+        list.appendChild(item);
+    }
     inputMessage.value = "";
 })
