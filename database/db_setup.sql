@@ -29,3 +29,12 @@ CREATE TABLE IF NOT EXISTS ws
     username VARCHAR(100) NOT NULL,
     session  INT          NOT NULL
 );
+
+INSERT INTO ws (username, session)
+VALUES ('user_1', 'session_1'),
+       ('user_2', 'session_1'),
+       ('user_3', 'session_1'),
+       ('user_4', 'session_2'),
+       ('user_5', 'session_2'),
+       ('user_6', 'session_3'),
+       ('user_7', 'session_3');
