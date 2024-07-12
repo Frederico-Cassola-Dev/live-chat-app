@@ -14,6 +14,15 @@ TODO - Try to send the username into the websocket server
        the user in the websocket server
 */
 
+conn.onmessage = function (e) {
+    const list = document.getElementById("messages-list");
+    const item = document.createElement("li");
+
+    item.innerText = JSON.parse(e.data).msg + "\n" + new Date(JSON.parse(e.data).date).toLocaleTimeString() + "\n" + JSON.parse(e.data).user;
+
+    list.appendChild(item);
+}
+
 inputLogin.addEventListener("input", function (e) {
     username = e.target.value;
 })
@@ -26,26 +35,31 @@ inputLogin.addEventListener("keypress", function (e) {
 })
 
 loginButton.addEventListener("click", function () {
-
     // Verify if the connection is established and if the input isn't empty
     if (conn.readyState === 1 && username !== "") {
-
         connectionStatus.innerText = `Connection established with the user ${username}!`;
-
-        conn.send(JSON.stringify({
-            user: username, session: "test"
-        }));
+        $.ajax({
+            type: "POST",
+            url: "../controllers/LoginUser.php",
+            data: {username: username},
+            dataType: "json",
+            success: function (data) {
+                console.log(data);
+            },
+            error: function (xhr, status, error) {
+                console.error(xhr, status, error);
+            }
+        })
     } else {
         connectionStatus.innerText = `Connection failed`;
     }
-
     inputLogin.value = "";
 })
 console.log("Connection", conn)
 
 inputMessage.addEventListener("input", function (e) {
     message = {
-        msg: e.target.value, date: Date.now(),
+        msg: e.target.value, date: Date.now(), user: username,
     };
 })
 
@@ -59,14 +73,5 @@ inputMessage.addEventListener("keypress", function (e) {
 sendMessageButton.addEventListener("click", function () {
     conn.send(JSON.stringify(message));
 
-    conn.onmessage = function (e) {
-
-        const list = document.getElementById("messages-list");
-        const item = document.createElement("li");
-
-        item.innerText = JSON.parse(e.data).msg + "\n" + new Date(JSON.parse(e.data).date).toLocaleTimeString();
-
-        list.appendChild(item);
-    }
     inputMessage.value = "";
 })

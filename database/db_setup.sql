@@ -1,4 +1,5 @@
 DROP TABLE IF EXISTS users;
+DROP TABLE IF EXISTS ws;
 
 CREATE TABLE IF NOT EXISTS users
 (
@@ -27,7 +28,7 @@ CREATE TABLE IF NOT EXISTS ws
 (
     id       INT AUTO_INCREMENT PRIMARY KEY,
     username VARCHAR(100) NOT NULL,
-    session  INT          NOT NULL
+    session  VARCHAR(100) NOT NULL
 );
 
 INSERT INTO ws (username, session)
