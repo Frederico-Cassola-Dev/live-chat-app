@@ -7,10 +7,10 @@
 </head>
 <body>
 <h1>Chat app</h1>
-<label>
-    <input type="text" id="inputLogin">
-    <button type="button" id="loginButton">Login</button>
-</label>
+    <label>
+        <input type="text" id="inputLogin" name="inputLogin">
+        <button type="submit" id="loginButton">Login</button>
+    </label>
 <h2 id="connection-status"></h2>
 <label>
     <input type="text" id="inputMessage">

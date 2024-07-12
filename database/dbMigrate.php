@@ -29,3 +29,5 @@ if($connection->multi_query($sqlFile) === TRUE){
 }else{
     echo "Error setting up database: " . $connection->error;
 }
+
+$connection->close();

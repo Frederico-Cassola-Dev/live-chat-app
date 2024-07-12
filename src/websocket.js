@@ -34,18 +34,18 @@ inputLogin.addEventListener("keypress", function (e) {
     }
 })
 
-loginButton.addEventListener("click", function () {
+loginButton.addEventListener("click", function (event) {
+    event.preventDefault();
+
     // Verify if the connection is established and if the input isn't empty
     if (conn.readyState === 1 && username !== "") {
         connectionStatus.innerText = `Connection established with the user ${username}!`;
+
         $.ajax({
             type: "POST",
             url: "../controllers/LoginUser.php",
             data: {username: username},
-            dataType: "json",
-            success: function (data) {
-                console.log(data);
-            },
+            dataType: "html",
             error: function (xhr, status, error) {
                 console.error(xhr, status, error);
             }
@@ -56,7 +56,24 @@ loginButton.addEventListener("click", function () {
     inputLogin.value = "";
 })
 console.log("Connection", conn)
-
+// $(document).ready(function () {
+//     $("#loginForm").submit(function (event) {
+//         event.preventDefault();
+//
+//         let formData = $(this).serialize();
+//
+//         $.ajax({
+//             type: "POST",
+//             url: "../controllers/LoginUser.php",
+//             data: formData,
+//             dataType: "html",
+//             error: function (xhr, status, error) {
+//                 console.error(xhr, status, error);
+//             }
+//         })
+//
+//     })
+// })
 inputMessage.addEventListener("input", function (e) {
     message = {
         msg: e.target.value, date: Date.now(), user: username,
