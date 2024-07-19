@@ -7,6 +7,9 @@
 </head>
 <body>
 <h1>Chat app</h1>
+<label>
+    <button type="button" id="openConnectionButton">Open connection</button>
+</label>
 <h2 id="connectionNumber"></h2>
     <label>
         <input type="text" id="inputLogin" name="inputLogin">
@@ -16,6 +19,9 @@
 <label>
     <input type="text" id="inputMessage" name="inputMessage">
     <button type="button" id="sendMessageButton">Send the message</button>
+</label>
+<label>
+    <button type="button" id="closeConnectionButton">Close connection</button>
 </label>
 <h3>Messages</h3>
 <ul id="messages-list">

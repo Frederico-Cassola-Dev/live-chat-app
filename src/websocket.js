@@ -1,4 +1,4 @@
-const conn = new WebSocket('ws://localhost:8080');
+let conn = new WebSocket('ws://localhost:8080');
 const connectionStatus = document.getElementById("connection-status");
 const inputMessage = document.querySelector("#inputMessage");
 const inputLogin = document.querySelector("#inputLogin");
@@ -16,16 +16,28 @@ TODO - Try to send the username into the websocket server
        the user in the websocket server
 */
 
-conn.onmessage = function (e) {
-    const {msg, date, user, resourceId} = JSON.parse(e.data);
-    const connectionNumber = document.getElementById("connectionNumber");
+const openConnectionButton = document.getElementById("openConnectionButton");
+openConnectionButton.addEventListener("click", function () {
+    conn.close();
+    conn = new WebSocket('ws://localhost:8080');
+    connectionStatus.innerText = `Connection open`;
+    console.log("Second Connection opened", conn);
+    conn.onmessage = function (event) {
+        const {resourceId} = JSON.parse(event.data);
+        console.log(JSON.stringify(event.data));
+        connectionNumber.innerText = "Connection number: " + resourceId;
+    }
+})
+
+conn.onmessage = function (event) {
+    console.log("Message received: ", JSON.parse(event.data));
+    const {data, date, user, resourceId, from_resourceId} = JSON.parse(event.data);
     const list = document.getElementById("messages-list");
     const item = document.createElement("li");
-
     connectionNumber.innerText = "Connection number: " + resourceId;
 
-    if (msg) {
-        item.innerText = `${msg} \n ${new Date(date).toLocaleTimeString()} \n ${user ? user : "No user"}`;
+    if (data) {
+        item.innerText = `${data.msg} \n ${new Date(date).toLocaleTimeString()} \n ${user ? user : "No user"} \n From user: ${from_resourceId}`;
         list.appendChild(item);
     }
 }
@@ -78,11 +90,12 @@ inputMessage.addEventListener("keypress", function (e) {
 
 sendMessageButton.addEventListener("click", function () {
     $.ajax({
-        type: "POST",
-        url: "../controllers/PostMessage.php",
-        data: {username: "user", message: message.msg, connectionNumber: connectionNumber.innerText},
-        dataType: "html",
-        error: function (xhr, status, error) {
+        type: "POST", url: "../controllers/PostMessage.php",
+        data: {
+            username: username,
+            message: message.msg,
+            connectionNumber: connectionNumber.innerText
+        }, dataType: "html", error: function (xhr, status, error) {
             console.error(xhr, status, error);
         }
     })
@@ -90,3 +103,20 @@ sendMessageButton.addEventListener("click", function () {
 
     inputMessage.value = "";
 })
+
+const closeConnectionButton = document.getElementById("closeConnectionButton");
+closeConnectionButton.addEventListener("click", function () {
+    conn.close();
+    connectionStatus.innerText = `Connection closed`;
+    connectionNumber.innerText = "Connection number: No Status";
+})
+
+
+// conn.on("message", function (event) {
+//     console.log("Received message", event.data);
+// })
+//
+// addEventListener("message", function (event) {
+//     console.log("Message received: ", event.data);
+//
+// })
