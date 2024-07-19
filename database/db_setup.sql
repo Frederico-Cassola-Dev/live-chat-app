@@ -28,14 +28,7 @@ CREATE TABLE IF NOT EXISTS ws
 (
     id       INT AUTO_INCREMENT PRIMARY KEY,
     username VARCHAR(100),
-    session  VARCHAR(100)
+    message VARCHAR(254),
+    connection_number  INT,
+    session  INT
 );
-
-INSERT INTO ws (username, session)
-VALUES ('user_1', 'session_1'),
-       ('user_2', 'session_1'),
-       ('user_3', 'session_1'),
-       ('user_4', 'session_2'),
-       ('user_5', 'session_2'),
-       ('user_6', 'session_3'),
-       ('user_7', 'session_3');

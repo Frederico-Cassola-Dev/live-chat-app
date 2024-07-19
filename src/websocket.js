@@ -5,6 +5,8 @@ const inputLogin = document.querySelector("#inputLogin");
 const sendMessageButton = document.querySelector("#sendMessageButton");
 const loginButton = document.querySelector("#loginButton");
 
+const connectionNumber = document.getElementById("connectionNumber");
+
 let username = "";
 let message = {};
 
@@ -15,12 +17,17 @@ TODO - Try to send the username into the websocket server
 */
 
 conn.onmessage = function (e) {
+    const {msg, date, user, resourceId} = JSON.parse(e.data);
+    const connectionNumber = document.getElementById("connectionNumber");
     const list = document.getElementById("messages-list");
     const item = document.createElement("li");
 
-    item.innerText = JSON.parse(e.data).msg + "\n" + new Date(JSON.parse(e.data).date).toLocaleTimeString() + "\n" + JSON.parse(e.data).user;
+    connectionNumber.innerText = "Connection number: " + resourceId;
 
-    list.appendChild(item);
+    if (msg) {
+        item.innerText = `${msg} \n ${new Date(date).toLocaleTimeString()} \n ${user ? user : "No user"}`;
+        list.appendChild(item);
+    }
 }
 
 inputLogin.addEventListener("input", function (e) {
@@ -55,25 +62,7 @@ loginButton.addEventListener("click", function (event) {
     }
     inputLogin.value = "";
 })
-console.log("Connection", conn)
-// $(document).ready(function () {
-//     $("#loginForm").submit(function (event) {
-//         event.preventDefault();
-//
-//         let formData = $(this).serialize();
-//
-//         $.ajax({
-//             type: "POST",
-//             url: "../controllers/LoginUser.php",
-//             data: formData,
-//             dataType: "html",
-//             error: function (xhr, status, error) {
-//                 console.error(xhr, status, error);
-//             }
-//         })
-//
-//     })
-// })
+
 inputMessage.addEventListener("input", function (e) {
     message = {
         msg: e.target.value, date: Date.now(), user: username,
@@ -88,6 +77,15 @@ inputMessage.addEventListener("keypress", function (e) {
 })
 
 sendMessageButton.addEventListener("click", function () {
+    $.ajax({
+        type: "POST",
+        url: "../controllers/PostMessage.php",
+        data: {username: "user", message: message.msg, connectionNumber: connectionNumber.innerText},
+        dataType: "html",
+        error: function (xhr, status, error) {
+            console.error(xhr, status, error);
+        }
+    })
     conn.send(JSON.stringify(message));
 
     inputMessage.value = "";

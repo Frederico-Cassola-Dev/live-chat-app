@@ -22,6 +22,14 @@ class Chat implements MessageComponentInterface
         $this->clients->attach($conn);
 
         echo "New connection! ($conn->resourceId)" . "\n";
+
+        // Send a welcome message to the client
+        $welcomeMessage = json_encode([
+            'type' => 'welcome',
+            'message' => 'Welcome! Your resource ID is ' . $conn->resourceId,
+            'resourceId' => $conn->resourceId,
+        ]);
+        $conn->send($welcomeMessage);
     }
 
     public function onMessage(ConnectionInterface $from, $msg)

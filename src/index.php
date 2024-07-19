@@ -7,13 +7,14 @@
 </head>
 <body>
 <h1>Chat app</h1>
+<h2 id="connectionNumber"></h2>
     <label>
         <input type="text" id="inputLogin" name="inputLogin">
         <button type="submit" id="loginButton">Login</button>
     </label>
-<h2 id="connection-status"></h2>
+<h3 id="connection-status"></h3>
 <label>
-    <input type="text" id="inputMessage">
+    <input type="text" id="inputMessage" name="inputMessage">
     <button type="button" id="sendMessageButton">Send the message</button>
 </label>
 <h3>Messages</h3>

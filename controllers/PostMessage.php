@@ -4,6 +4,11 @@ global $connection;
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $username = $_POST['username'];
+    $message = $_POST['message'];
+    $connectionNumber = $_POST['connectionNumber'];
+    $session = $_POST["session"];
+    echo $_POST['message'];
+
 
     try {
         require_once '../database/dbHandler.php';
@@ -13,10 +18,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             throw new Exception('Database connection not initialized');
         }
 
-        $query = 'INSERT INTO ws(username) VALUES(?)';
+        $query = 'INSERT INTO ws(username, message, connection_number, session) VALUES(?,?,?,?)';
 
         $stmt = $connection->prepare($query);
-        $stmt->bind_param("s", $username);
+        $stmt->bind_param("ssii", $username,$message, $connectionNumber, $session);
         $stmt->execute();
 
         $stmt->close();
