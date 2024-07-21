@@ -4,6 +4,7 @@ global $connection;
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $username = $_POST['username'];
+    $status = $_POST['status'];
 
     try {
         require_once '../database/dbHandler.php';
@@ -13,10 +14,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             throw new Exception('Database connection not initialized');
         }
 
-        $query = 'INSERT INTO ws(username) VALUES(?)';
+        $query = 'INSERT INTO users(username, status) VALUES(?, ?)';
 
         $stmt = $connection->prepare($query);
-        $stmt->bind_param("s", $username);
+        $stmt->bind_param("si", $username, $status);
         $stmt->execute();
 
         $stmt->close();

@@ -1,4 +1,5 @@
-let conn = new WebSocket('ws://localhost:8080');
+// let conn = new WebSocket('ws://localhost:8080');
+let conn = null;
 const connectionStatus = document.getElementById("connection-status");
 const inputMessage = document.querySelector("#inputMessage");
 const inputLogin = document.querySelector("#inputLogin");
@@ -28,17 +29,19 @@ openConnectionButton.addEventListener("click", function () {
         connectionNumber.innerText = "Connection number: " + resourceId;
     }
 })
+while (conn == null) {
+console.log("inside the while loop")
+    conn.onmessage = function (event) {
+        console.log("Message received: ", JSON.parse(event.data));
+        const {data, date, user, resourceId, from_resourceId} = JSON.parse(event.data);
+        const list = document.getElementById("messages-list");
+        const item = document.createElement("li");
+        connectionNumber.innerText = "Connection number: " + resourceId;
 
-conn.onmessage = function (event) {
-    console.log("Message received: ", JSON.parse(event.data));
-    const {data, date, user, resourceId, from_resourceId} = JSON.parse(event.data);
-    const list = document.getElementById("messages-list");
-    const item = document.createElement("li");
-    connectionNumber.innerText = "Connection number: " + resourceId;
-
-    if (data) {
-        item.innerText = `${data.msg} \n ${new Date(date).toLocaleTimeString()} \n ${user ? user : "No user"} \n From user: ${from_resourceId}`;
-        list.appendChild(item);
+        if (data) {
+            item.innerText = `${data.msg} \n ${new Date(date).toLocaleTimeString()} \n ${user ? user : "No user"} \n From user: ${from_resourceId}`;
+            list.appendChild(item);
+        }
     }
 }
 
@@ -57,13 +60,14 @@ loginButton.addEventListener("click", function (event) {
     event.preventDefault();
 
     // Verify if the connection is established and if the input isn't empty
-    if (conn.readyState === 1 && username !== "") {
+    if (username !== "") {
+        conn = new WebSocket('ws://localhost:8080');
         connectionStatus.innerText = `Connection established with the user ${username}!`;
 
         $.ajax({
             type: "POST",
             url: "../controllers/LoginUser.php",
-            data: {username: username},
+            data: {username: username, status: true},
             dataType: "html",
             error: function (xhr, status, error) {
                 console.error(xhr, status, error);
@@ -92,9 +96,9 @@ sendMessageButton.addEventListener("click", function () {
     $.ajax({
         type: "POST", url: "../controllers/PostMessage.php",
         data: {
-            username: username,
-            message: message.msg,
-            connectionNumber: connectionNumber.innerText
+            msg: message.msg,
+            userId: 1,
+            conversationId: 22,
         }, dataType: "html", error: function (xhr, status, error) {
             console.error(xhr, status, error);
         }
