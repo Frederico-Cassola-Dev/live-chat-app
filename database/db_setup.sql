@@ -1,5 +1,7 @@
-DROP TABLE IF EXISTS users;
 DROP TABLE IF EXISTS ws;
+DROP TABLE IF EXISTS messages;
+DROP TABLE IF EXISTS conversations;
+DROP TABLE IF EXISTS users;
 
 CREATE TABLE IF NOT EXISTS users
 (
@@ -24,11 +26,31 @@ VALUES ('john_doe', 'John', 'Doe', 34, 'France', 'john_doe@mail.com'),
        ('david_kim', 'David', 'Kim', 36, 'South Korea', 'john_doe@mail.com'),
        ('sophia_lambert', 'Sophia', 'Lambert', 27, 'Italy', 'john_doe@mail.com');
 
-CREATE TABLE IF NOT EXISTS ws
+# CREATE TABLE IF NOT EXISTS ws
+# (
+#     id                INT AUTO_INCREMENT PRIMARY KEY,
+#     username          VARCHAR(100),
+#     message           VARCHAR(254),
+#     connection_number INT,
+#     session           INT
+# );
+
+create table if not exists conversations
 (
-    id       INT AUTO_INCREMENT PRIMARY KEY,
-    username VARCHAR(100),
-    message VARCHAR(254),
-    connection_number  INT,
-    session  INT
+    id            int auto_increment primary key,
+    sender_id     int,
+    receiver_id   int,
+    creation_date datetime
 );
+
+create table if not exists messages
+(
+    id              int auto_increment primary key,
+    test            varchar(255),
+    creation_date   datetime,
+    user_id         int not null,
+    conversation_id int not null,
+    foreign key (user_id) references users (id),
+    foreign key (conversation_id) references conversations (id)
+);
+
